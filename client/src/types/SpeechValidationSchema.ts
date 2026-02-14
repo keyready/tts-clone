@@ -16,7 +16,7 @@ export const speechValidationSchema = yup
             .string()
             .required('Введите текст, который нужно озвучить')
             .min(10, 'Минимум 10 символов')
-            .max(2000, 'Максимум 2000 символов'),
+            .max(20000, 'Максимум 20000 символов'),
     })
     .required();
 

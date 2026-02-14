@@ -10,8 +10,11 @@ import type { AvailableLanguages } from '@/entities/Language';
 import { langsIconMapper, langsTransMapper, useLanguages } from '@/entities/Language';
 import { useVoices } from '@/entities/Voice';
 
+import { StreamingAudioPlayer } from '@/components/StreamingAudioPlayer';
 import { Wavesurfer } from '@/components/Wavesurfer';
 import { $api } from '@/helpers/api';
+import { concatenateAudioBlobs } from '@/helpers/concatenateAudioBlobs';
+import { splitTextIntoChunks } from '@/helpers/splitTextIntoChunks';
 import { type SpeechSchema, speechValidationSchema } from '@/types/SpeechValidationSchema';
 
 export const SpeechSynthesisTab = () => {
@@ -33,8 +36,16 @@ export const SpeechSynthesisTab = () => {
     });
 
     const [generatedAudioUrl, setGeneratedAudioUrl] = useState<string>('');
+    const [streamingChunks, setStreamingChunks] = useState<Map<number, Blob>>(new Map());
+    const [streamingTotalChunks, setStreamingTotalChunks] = useState(0);
 
     const [isAudioCreating, setIsAudioCreating] = useState<boolean>(false);
+
+    useEffect(() => {
+        return () => {
+            if (generatedAudioUrl) URL.revokeObjectURL(generatedAudioUrl);
+        };
+    }, [generatedAudioUrl]);
 
     useEffect(() => {
         if (!voiceFromUrl || isVoicesLoading || voices.length === 0) return;
@@ -52,20 +63,45 @@ export const SpeechSynthesisTab = () => {
     const handleSynthesize = useCallback(async (form: SpeechSchema) => {
         try {
             setIsAudioCreating(true);
-            const res = await $api.post(
-                '/tts/synthesize-speech',
-                {
-                    text: form.text,
-                    language: form.language,
-                    voice: form.voice,
-                    streaming: false,
-                    audio_filename: form.filename + '.mp3',
-                },
-                { responseType: 'blob' },
+            setStreamingChunks(new Map());
+
+            const chunks = splitTextIntoChunks(form.text, 100);
+            setStreamingTotalChunks(chunks.length);
+            if (chunks.length === 0) {
+                addToast({
+                    color: 'danger',
+                    title: 'Нет текста для синтеза',
+                    description: 'Введите текст для озвучки',
+                });
+                return;
+            }
+
+            const requests = chunks.map((chunk, index) =>
+                $api
+                    .post(
+                        '/tts/synthesize-speech',
+                        {
+                            text: chunk,
+                            language: form.language,
+                            voice: form.voice,
+                            streaming: false,
+                            audio_filename: `${form.filename}-part-${index}.mp3`,
+                        },
+                        { responseType: 'blob' },
+                    )
+                    .then((res) => {
+                        const blob = new Blob([res.data], { type: 'audio/mpeg' });
+                        setStreamingChunks((prev) => new Map(prev).set(index, blob));
+                        return { index, blob };
+                    }),
             );
 
-            const blob = new Blob([res.data], { type: 'audio/mpeg' });
-            const url = URL.createObjectURL(blob);
+            const results = await Promise.all(requests);
+            results.sort((a, b) => a.index - b.index);
+
+            const orderedBlobs = results.map((r) => r.blob);
+            const mergedBlob = await concatenateAudioBlobs(orderedBlobs);
+            const url = URL.createObjectURL(mergedBlob);
             setGeneratedAudioUrl(url);
         } catch (error) {
             console.error('Ошибка синтеза речи:', error);
@@ -196,6 +232,10 @@ export const SpeechSynthesisTab = () => {
             >
                 Синтезировать речь
             </Button>
+
+            {isAudioCreating && streamingChunks.size > 0 && (
+                <StreamingAudioPlayer chunks={streamingChunks} totalChunks={streamingTotalChunks} />
+            )}
 
             {generatedAudioUrl && (
                 <div className="flex flex-col">
