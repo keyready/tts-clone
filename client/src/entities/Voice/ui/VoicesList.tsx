@@ -3,8 +3,8 @@ import { CiTrash } from 'react-icons/ci';
 
 import { useVoices } from '@/entities/Voice';
 
+import { $api } from '@/api/api';
 import { Wavesurfer } from '@/components/Wavesurfer';
-import { $api } from '@/helpers/api';
 
 export const VoicesList = () => {
     const { data: voices = [], isLoading, isFetching, isError } = useVoices();

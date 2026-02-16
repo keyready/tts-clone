@@ -5,7 +5,7 @@ import type { AxiosInstance } from 'axios';
 import { LanguageSchema } from '@/entities/Language';
 import { VoiceSchema } from '@/entities/Voice';
 
-import { rtkapi } from '@/helpers/rtkapi';
+import { rtkapi } from '@/api/rtkapi';
 
 export interface StateSchema {
     // synchronous reducers

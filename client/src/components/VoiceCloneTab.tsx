@@ -1,15 +1,19 @@
-import { Button, Input, Textarea } from '@heroui/react';
+import { addToast, Button, Input, Textarea } from '@heroui/react';
 
 import { useCallback, useState } from 'react';
 
+import { useVoices } from '@/entities/Voice';
+
+import { $api } from '@/api/api';
 import { FileInput } from '@/components/FileInput';
-import { $api } from '@/helpers/api';
 
 interface VoiceCloneTabProps {
     onVoiceCreated: (voice?: string) => void;
 }
 
 export const VoiceCloneTab = ({ onVoiceCreated }: VoiceCloneTabProps) => {
+    const { refetch } = useVoices();
+
     const [refText, setRefText] = useState('');
     const [voiceRef, setVoiceRef] = useState<File | undefined>();
     const [voiceName, setVoiceName] = useState<string>('');
@@ -25,14 +29,23 @@ export const VoiceCloneTab = ({ onVoiceCreated }: VoiceCloneTabProps) => {
         try {
             await $api.post('/tts/voice-clone', formData);
             onVoiceCreated(voiceName);
+            refetch();
             setRefText('');
             setVoiceRef(undefined);
-            alert('Голос успешно создан!');
+            addToast({
+                title: 'Голос успешно склонирован',
+                description: 'Теперь Вы можете использовать его для озвучки',
+                color: 'success',
+            });
         } catch (error) {
             console.error('Ошибка клонирования голоса:', error);
-            alert('Не удалось создать голос. Проверьте файл и субтитры.');
+            addToast({
+                title: 'Ошибка клонирования голоса',
+                description: JSON.stringify(error),
+                color: 'danger',
+            });
         }
-    }, [voiceRef, refText, voiceName, onVoiceCreated]);
+    }, [voiceRef, refText, voiceName, onVoiceCreated, refetch]);
 
     const handleChangeRefAudio = useCallback((file: File) => {
         setVoiceRef(file);

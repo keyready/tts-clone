@@ -10,9 +10,9 @@ import type { AvailableLanguages } from '@/entities/Language';
 import { langsIconMapper, langsTransMapper, useLanguages } from '@/entities/Language';
 import { useVoices } from '@/entities/Voice';
 
+import { $api } from '@/api/api';
 import { StreamingAudioPlayer } from '@/components/StreamingAudioPlayer';
 import { Wavesurfer } from '@/components/Wavesurfer';
-import { $api } from '@/helpers/api';
 import { concatenateAudioBlobs } from '@/helpers/concatenateAudioBlobs';
 import { splitTextIntoChunks } from '@/helpers/splitTextIntoChunks';
 import { type SpeechSchema, speechValidationSchema } from '@/types/SpeechValidationSchema';

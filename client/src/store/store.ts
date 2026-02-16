@@ -6,8 +6,8 @@ import { VoiceReducer } from '@/entities/Voice';
 import { createReducerManager } from './reducerManager';
 import type { StateSchema } from './StateSchema';
 
-import { $api } from '@/helpers/api';
-import { rtkapi } from '@/helpers/rtkapi';
+import { $api } from '@/api/api';
+import { rtkapi } from '@/api/rtkapi';
 
 export function CreateReduxStore(
     initialState?: StateSchema,

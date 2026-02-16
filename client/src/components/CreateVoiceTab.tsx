@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useVoices } from '@/entities/Voice';
 
-import { $api } from '@/helpers/api';
+import { $api } from '@/api/api';
 import {
     VoiceDesignSchema,
     voiceDesignValidationSchema,
@@ -43,6 +43,7 @@ export const CreateVoiceTab = ({ onVoiceCreated }: { onVoiceCreated: (voice: str
                     instruct: form.instruct,
                     voice_name: form.filename + '.mp3',
                 });
+                refetch();
                 onVoiceCreated(form.filename);
             } catch (error) {
                 addToast({
@@ -52,7 +53,6 @@ export const CreateVoiceTab = ({ onVoiceCreated }: { onVoiceCreated: (voice: str
                 });
             } finally {
                 setIsVoiceCreating(false);
-                refetch();
                 reset();
             }
         },
