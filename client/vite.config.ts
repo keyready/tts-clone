@@ -9,5 +9,9 @@ export default defineConfig({
     plugins: [react(), tsconfigPaths(), tailwindcss()],
     server: {
         port: 3030,
+        // https: {
+        //     key: fs.readFileSync('../server.key'),
+        //     cert: fs.readFileSync('../server.crt'),
+        // },
     },
 });

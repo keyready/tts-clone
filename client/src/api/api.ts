@@ -6,6 +6,10 @@ export const $api = axios.create({
     baseURL: 'http://192.168.0.10:8006',
 });
 
+export const $whisperApi = axios.create({
+    baseURL: 'http://192.168.0.10:15001',
+});
+
 $api.interceptors.request.use(
     (config) => {
         return config;

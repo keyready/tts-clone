@@ -9,7 +9,12 @@ const voicesApi = rtkapi.injectEndpoints({
                 url: '/tts/voices-list',
             }),
             transformResponse(voices: string[]): Voice[] {
-                return voices.map((v) => ({ voice_name: v }));
+                return voices
+                    .map((v) => ({ voice_name: v }))
+                    .sort((a, b) => {
+                        if (a.voice_name === 'russian') return 1;
+                        return a.voice_name.localeCompare(b.voice_name);
+                    });
             },
         }),
     }),

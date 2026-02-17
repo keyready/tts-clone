@@ -1,14 +1,20 @@
 import { addToast, cn } from '@heroui/react';
+import { HiOutlineUpload } from 'react-icons/hi';
 
-import { ChangeEvent, DragEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, DragEvent, forwardRef, useCallback, useEffect, useState } from 'react';
 
-import { formatBytes } from '@/helpers/formatBytes';
+interface FileInputProps {
+    file: File | undefined;
+    onChange: (f: File) => void;
+    isRecordSelected?: boolean;
+}
 
-export const FileInput = ({ onChange }: { onChange: (f: File) => void }) => {
+export const FileInput = forwardRef<HTMLInputElement, FileInputProps>((props, ref) => {
+    const { isRecordSelected, onChange, file } = props;
+
     const [isDraggableFileSatisfied, setIsDraggableFileSatisfied] = useState<
         'sat' | 'nsat' | 'null'
     >('null');
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     useEffect(() => {
         const handlePaste = (e: ClipboardEvent) => {
@@ -43,7 +49,6 @@ export const FileInput = ({ onChange }: { onChange: (f: File) => void }) => {
 
             if (wavFile) {
                 onChange(wavFile);
-                setSelectedFile(wavFile);
                 setIsDraggableFileSatisfied('null');
             } else {
                 setIsDraggableFileSatisfied('nsat');
@@ -51,7 +56,6 @@ export const FileInput = ({ onChange }: { onChange: (f: File) => void }) => {
                     setIsDraggableFileSatisfied('null');
                 }, 2000);
                 addToast({ color: 'danger', title: 'Скопируйте (.wav/.mp3/.ogg)-файл' });
-                setSelectedFile(null);
                 return () => clearTimeout(timer);
             }
         };
@@ -101,7 +105,6 @@ export const FileInput = ({ onChange }: { onChange: (f: File) => void }) => {
             const file = ev.target.files?.[0];
             if (file && ['audio/wav', 'audio/ogg', 'audio/mp3', 'audio/mpeg'].includes(file.type)) {
                 onChange(file);
-                setSelectedFile(file);
             } else if (file) {
                 setIsDraggableFileSatisfied('nsat');
                 setTimeout(() => setIsDraggableFileSatisfied('null'), 2000);
@@ -111,20 +114,22 @@ export const FileInput = ({ onChange }: { onChange: (f: File) => void }) => {
     );
 
     return (
-        <label htmlFor="file-input">
+        <label htmlFor="file-input" className="w-full">
             <input
                 id="file-input"
                 onChange={handleChangeFile}
                 type="file"
                 accept="audio/wav,audio/ogg,audio/mp3"
                 className="hidden"
+                ref={ref}
             />
             <div
                 onDragOver={handleDragOver}
                 onDragLeave={() => setIsDraggableFileSatisfied('null')}
                 onDrop={handleFileDrop}
                 className={cn(
-                    'cursor-pointer rounded-xl bg-[#f4f4f5] px-8 py-4 duration-100 hover:bg-[#e4e4e7] focus:ring-2 focus:ring-blue-500 focus:outline-none',
+                    'cursor-pointer rounded-xl bg-[#f4f4f5] px-4 py-4 duration-100',
+                    'hover:bg-[#e4e4e7] focus:ring-2 focus:ring-blue-500 focus:outline-none',
                     isDraggableFileSatisfied === 'sat' && 'bg-green-200',
                     isDraggableFileSatisfied === 'nsat' && 'bg-red-200',
                 )}
@@ -137,11 +142,13 @@ export const FileInput = ({ onChange }: { onChange: (f: File) => void }) => {
                     }
                 }}
             >
-                {selectedFile ? (
-                    <p>
-                        Выбран файл <pre className="inline">{selectedFile.name}</pre> (
-                        {formatBytes(selectedFile.size, 1, false)})
-                    </p>
+                {file || isRecordSelected ? (
+                    <div className="flex items-center gap-2">
+                        <HiOutlineUpload size={24} className="flex-[1_0_auto]" />
+                        <p className="text-[10px] italic opacity-60">
+                            Вы можете выбрать новый файл
+                        </p>
+                    </div>
                 ) : (
                     <>
                         {isDraggableFileSatisfied === 'sat' && (
@@ -159,18 +166,21 @@ export const FileInput = ({ onChange }: { onChange: (f: File) => void }) => {
                             </>
                         )}
                         {isDraggableFileSatisfied === 'null' && (
-                            <>
-                                <p>Выберите файл</p>
-                                <p className="italic opacity-50">или перетащите его сюда</p>
-                                <p className="italic opacity-50">
-                                    или <pre className="inline">Ctrl + V</pre> для вставки из буфера
-                                    обмена
-                                </p>
-                            </>
+                            <div className="flex items-center gap-10">
+                                <HiOutlineUpload size={46} />
+                                <div className="flex flex-col">
+                                    <p>Выберите файл</p>
+                                    <p className="italic opacity-50">или перетащите его сюда</p>
+                                    <p className="italic opacity-50">
+                                        или <pre className="inline">Ctrl + V</pre> для вставки из
+                                        буфера обмена
+                                    </p>
+                                </div>
+                            </div>
                         )}
                     </>
                 )}
             </div>
         </label>
     );
-};
+});

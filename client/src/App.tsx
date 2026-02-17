@@ -57,7 +57,7 @@ export default function App() {
     );
 
     return (
-        <section className="min-h-screen w-full bg-gradient-to-br from-blue-50 to-indigo-100 p-6 md:p-8">
+        <section className="min-h-screen w-full bg-gradient-to-br from-amber-500 to-rose-500 p-6 md:p-8">
             <div className="mx-auto max-w-4xl">
                 <h1 className="mb-8 text-center text-2xl font-bold text-gray-800 md:text-3xl">
                     Система клонирования голоса и синтеза речи
@@ -72,16 +72,17 @@ export default function App() {
                         panel: 'py-6',
                     }}
                 >
+                    <Tab key="speech_synthesis" title="Синтез речи">
+                        <SpeechSynthesisTab />
+                    </Tab>
                     <Tab key="voice_clone" title="Клонирование голоса">
                         <VoiceCloneTab onVoiceCreated={handleVoiceCreated} />
                     </Tab>
                     <Tab key="voice_design" title="Создание голоса">
                         <CreateVoiceTab onVoiceCreated={handleVoiceCreated} />
                     </Tab>
-                    <Tab key="speech_synthesis" title="Синтез речи">
-                        <SpeechSynthesisTab />
-                    </Tab>
-                    <Tab key="available_voices" title="Доступные голоса">
+
+                    <Tab className="hidden" key="available_voices" title="Доступные голоса">
                         <VoicesList />
                     </Tab>
                 </Tabs>

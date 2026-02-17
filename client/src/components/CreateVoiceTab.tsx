@@ -1,4 +1,4 @@
-import { addToast, Button, Input, Textarea } from '@heroui/react';
+import { addToast, Alert, Button, Input, Textarea } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useCallback, useState } from 'react';
@@ -61,6 +61,17 @@ export const CreateVoiceTab = ({ onVoiceCreated }: { onVoiceCreated: (voice: str
 
     return (
         <form onSubmit={handleSubmit(handleCreateVoice)} className="flex flex-col gap-4">
+            <Alert
+                variant="solid"
+                color="default"
+                title="Создание голоса по Вашему запросу"
+                description={
+                    'Опишите голос, который хотите получить. Описывайте максимально подробно: интоннации, ' +
+                    'дефекты произношения, тембр или что угодно еще. Чем подробнее Вы опишете голос, тем ' +
+                    'качественнее будет результат.'
+                }
+            />
+
             <Controller
                 render={({ field }) => (
                     <Textarea

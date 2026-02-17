@@ -49,7 +49,11 @@ export const VoiceSelector = () => {
                 emptyContent: 'Нет доступных языков',
             }}
         >
-            {(item) => <SelectItem key={item.key}>{item.voice_name}</SelectItem>}
+            {(item) => (
+                <SelectItem description="Описани евыбранного голоса" key={item.key}>
+                    {item.voice_name}
+                </SelectItem>
+            )}
         </Select>
     );
 };

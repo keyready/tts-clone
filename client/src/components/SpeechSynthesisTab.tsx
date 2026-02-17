@@ -1,4 +1,4 @@
-import { addToast, Button, cn, Input, Select, SelectItem, Textarea } from '@heroui/react';
+import { addToast, Alert, Button, cn, Input, Select, SelectItem, Textarea } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useCallback, useEffect, useState } from 'react';
@@ -117,6 +117,18 @@ export const SpeechSynthesisTab = () => {
 
     return (
         <form onSubmit={handleSubmit(handleSynthesize)} className="flex flex-col gap-4">
+            <Alert
+                variant="solid"
+                color="default"
+                title="Синтез речи"
+                description={
+                    'Выберите голос для синтеза речи. Введите текст для озвучивания. ' +
+                    'Вводите текст максимально грамотно, бзе грамматическихз и лексических ошибок. ' +
+                    'Чем грамотнее написан текст, тем качественнее получится результат озвучки. ' +
+                    'Длина текста ограничена 20000 символами.'
+                }
+            />
+
             <div className="flex gap-4">
                 <Controller
                     render={({ field }) => (
