@@ -164,7 +164,7 @@ export const VoiceCloneTab = ({ onVoiceCreated }: VoiceCloneTabProps) => {
         setIsTextExtracting(true);
 
         try {
-            const res = await $whisperApi.post('/transcribe', formData);
+            const res = await $whisperApi.post('/asr/extract_text', formData);
             setAudioText(res.data.text);
         } catch (err) {
             addToast({ title: 'Произошла ошибка', color: 'danger' });
