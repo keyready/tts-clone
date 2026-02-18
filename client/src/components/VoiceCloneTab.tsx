@@ -96,7 +96,6 @@ export const VoiceCloneTab = ({ onVoiceCreated }: VoiceCloneTabProps) => {
             console.error('Ошибка клонирования голоса:', error);
             addToast({
                 title: 'Ошибка клонирования голоса',
-                description: JSON.stringify(error),
                 color: 'danger',
             });
         }
@@ -222,7 +221,6 @@ export const VoiceCloneTab = ({ onVoiceCreated }: VoiceCloneTabProps) => {
                             >
                                 <AudioRecording
                                     onAudioSave={handleChangeRefAudio}
-                                    isRecordSelected={isRecordSelected}
                                     onRecordSelected={() => setIsRecordSelected(true)}
                                 />
                             </motion.div>

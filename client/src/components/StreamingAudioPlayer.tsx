@@ -1,11 +1,5 @@
 import { Button, Tooltip } from '@heroui/react';
-import {
-    CiPause1,
-    CiPlay1,
-    CiVolume,
-    CiVolumeHigh,
-    CiVolumeMute,
-} from 'react-icons/ci';
+import { CiPause1, CiPlay1, CiVolume, CiVolumeHigh, CiVolumeMute } from 'react-icons/ci';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -113,7 +107,11 @@ export const StreamingAudioPlayer = ({
         if (found || pos > 0) {
             setCurrentTime(pos);
         }
-        if (pos >= totalDuration && totalDuration > 0 && scheduledRef.current.length === totalChunks) {
+        if (
+            pos >= totalDuration &&
+            totalDuration > 0 &&
+            scheduledRef.current.length === totalChunks
+        ) {
             setIsPlaying(false);
         }
     }, [totalDuration, totalChunks]);

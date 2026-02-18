@@ -10,7 +10,10 @@ export function splitTextIntoChunks(text: string, minChars = MIN_CHUNK_LENGTH): 
     const trimmed = text.trim();
     if (!trimmed) return [];
 
-    const sentences = trimmed.split(SENTENCE_END_REGEX).map((s) => s.trim()).filter(Boolean);
+    const sentences = trimmed
+        .split(SENTENCE_END_REGEX)
+        .map((s) => s.trim())
+        .filter(Boolean);
     if (sentences.length === 0) return [trimmed];
 
     const chunks: string[] = [];

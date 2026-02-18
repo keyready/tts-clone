@@ -3,11 +3,11 @@ import { configureStore, type ReducersMapObject } from '@reduxjs/toolkit';
 import { LanguageReducer } from '@/entities/Language';
 import { VoiceReducer } from '@/entities/Voice';
 
-import { createReducerManager } from './reducerManager';
-import type { StateSchema } from './StateSchema';
-
 import { $api } from '@/api/api';
 import { rtkapi } from '@/api/rtkapi';
+
+import type { StateSchema } from './StateSchema';
+import { createReducerManager } from './reducerManager';
 
 export function CreateReduxStore(
     initialState?: StateSchema,

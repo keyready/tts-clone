@@ -34,10 +34,7 @@ export async function concatenateAudioBlobs(blobs: Blob[]): Promise<Blob> {
     return result;
 }
 
-async function decodeBlobToAudioBuffer(
-    blob: Blob,
-    context?: AudioContext,
-): Promise<AudioBuffer> {
+async function decodeBlobToAudioBuffer(blob: Blob, context?: AudioContext): Promise<AudioBuffer> {
     const ctx = context ?? new AudioContext();
     const arrayBuffer = await blob.arrayBuffer();
     return ctx.decodeAudioData(arrayBuffer);

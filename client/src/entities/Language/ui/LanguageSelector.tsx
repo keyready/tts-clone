@@ -5,14 +5,13 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import Flag from 'react-world-flags';
 
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+
 import { useLanguages } from '../api/LanguageApi';
 import { langsIconMapper, langsTransMapper } from '../model/consts/languages';
 import { getSelectedLanguage } from '../model/selectors/getSelectedLanguage';
 import { LanguageActions } from '../model/slice/LanguageSlice';
-
 import type { AvailableLanguages } from '../model/types/Language';
-
-import { useAppDispatch } from '@/hooks/useAppDispatch';
 
 export const LanguageSelector = () => {
     const { data: languages = [], isLoading, isFetching, isError } = useLanguages();

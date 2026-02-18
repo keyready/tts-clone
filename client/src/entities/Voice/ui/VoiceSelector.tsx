@@ -4,11 +4,11 @@ import type { Selection } from '@react-types/shared';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+
 import { useVoices } from '../api/voiceApi';
 import { getSelectedVoice } from '../model/selectors/getSelectedVoice';
 import { VoiceActions } from '../model/slice/VoiceSlice';
-
-import { useAppDispatch } from '@/hooks/useAppDispatch';
 
 export const VoiceSelector = () => {
     const { data: voices = [], isLoading, isFetching, isError } = useVoices();

@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@heroui/react';
+import { addToast, Button, ButtonGroup, Tooltip } from '@heroui/react';
 import WavesurferPlayer from '@wavesurfer/react';
 import { CiEraser, CiPause1, CiPlay1, CiTrash } from 'react-icons/ci';
 import { HiOutlineUpload } from 'react-icons/hi';
@@ -61,19 +61,57 @@ export const AudioPlayer = (props: AudioPlayerProps) => {
                 });
             }
         },
-        [plugins],
+        [onBordersChange, plugins],
     );
+
+    const handleRestoreVolume = useCallback(() => {
+        wavesurfer?.setVolume(1);
+        addToast({
+            color: 'success',
+            title: 'Вернули как было',
+            description: 'И больше так обещаем не делать...',
+        });
+        localStorage.setItem('decrease_volume', 'false');
+    }, [wavesurfer]);
 
     const handleControlsClick = useCallback(() => {
         if (isPlaying) {
             setIsPlaying(false);
             wavesurfer?.pause();
         } else {
+            if (!localStorage.getItem('decrease_volume')) {
+                wavesurfer?.setVolume(0.2);
+                addToast({
+                    color: 'default',
+                    severity: 'warning',
+                    title: 'Мы сделали звук потише',
+                    description:
+                        'Поставили громкость воспроизведения на 20%, чтобы никого не напугать',
+                    classNames: {
+                        base: 'flex flex-col gap-2',
+                    },
+                    endContent: (
+                        <ButtonGroup className="w-4/5 justify-center">
+                            <Button color="success" size="sm" className="w-full">
+                                Спасибо!
+                            </Button>
+                            <Button
+                                onPress={handleRestoreVolume}
+                                color="danger"
+                                size="sm"
+                                className="w-full"
+                            >
+                                Не надо...
+                            </Button>
+                        </ButtonGroup>
+                    ),
+                });
+            }
+
             setIsPlaying(true);
-            wavesurfer?.setVolume(0.2);
             wavesurfer?.play();
         }
-    }, [isPlaying, wavesurfer]);
+    }, [handleRestoreVolume, isPlaying, wavesurfer]);
 
     return (
         <div className="bg-default-100 flex gap-2 rounded-xl p-3 shadow-xs">

@@ -1,6 +1,6 @@
-import { Voice } from '../model/types/Voice';
-
 import { rtkapi } from '@/api/rtkapi';
+
+import { Voice } from '../model/types/Voice';
 
 const voicesApi = rtkapi.injectEndpoints({
     endpoints: (build) => ({

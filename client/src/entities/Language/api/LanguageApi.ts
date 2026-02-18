@@ -1,6 +1,6 @@
-import { AvailableLanguages, Language } from '../model/types/Language';
-
 import { rtkapi } from '@/api/rtkapi';
+
+import { AvailableLanguages, Language } from '../model/types/Language';
 
 const languagesApi = rtkapi.injectEndpoints({
     endpoints: (build) => ({
